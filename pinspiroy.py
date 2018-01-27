@@ -14,8 +14,8 @@ from config import LEFT_HANDED as LEFT_HANDED,\
 	FULL_PRESSURE as FULL_PRESSURE
 
 #tablet config values
-PEN_MAX_X = 50800
-PEN_MAX_Y = 31750 
+PEN_MAX_X = 44000 #50800
+PEN_MAX_Y = 27300 #31750 
 PEN_MAX_Z = 2048 	#pressure
 
 msc = 1
@@ -55,7 +55,6 @@ cap_btn = {
 
 # create our 3 virtual devices
 vpen 	= UInput(cap_pen, 	name="pinspiroy-pen", 		version=0x3)
-vtrack 	= UInput(cap_track, name="pinspiroy-trackpad", 	version=0x4)
 vbtn	= UInput(cap_btn, 	name="pinspiroy-button", 	version=0x5)
 
 time.sleep(0.1) # needed due to some xserver feature 
@@ -138,21 +137,7 @@ def id_pen(data):
 
 	vpen.syn() #sync all inputs together
 
-def gst_tap1(whatever): #single finger tap
-	if TRACKPAD_ENABLED:
-		vtrack.write(ecodes.EV_KEY, ecodes.BTN_LEFT, 1)
-		vtrack.write(ecodes.EV_KEY, ecodes.BTN_LEFT, 0)
-		vtrack.syn()
-def gst_tap2(whatever): #single finger tap
-	if TRACKPAD_ENABLED:
-		vtrack.write(ecodes.EV_KEY, ecodes.BTN_RIGHT, 1)
-		vtrack.write(ecodes.EV_KEY, ecodes.BTN_RIGHT, 0)
-		vtrack.syn()
-def gst_tap3(whatever): #single finger tap
-	if TRACKPAD_ENABLED:
-		vtrack.write(ecodes.EV_KEY, ecodes.BTN_MIDDLE, 1)
-		vtrack.write(ecodes.EV_KEY, ecodes.BTN_MIDDLE, 0)
-		vtrack.syn()
+
 
 # switch to handle input types
 input_switch = {
@@ -167,70 +152,33 @@ input_switch = {
 
 # switch to handle button types
 btn_switch = {
-	1 :bindings.btn1, #clockwise from top left
-	2 :bindings.btn2, 
-	4 :bindings.btn3, 
-	8 :bindings.btn4, 
-	16:bindings.btn5, 
-	32:bindings.btn6, 
+	1  :bindings.btn1, #from top to bottom
+	2  :bindings.btn2, 
+	4  :bindings.btn3, 
+	8  :bindings.btn4, 
+	16 :bindings.btn5, 
+	32 :bindings.btn6, 
+	64 :bindings.btn7,
+	128:bindings.btn8,
 
 	0 :bindings.btn0, #button released
 }
 
 # reverse button order for LH setting
 btn_switch_LH = {
-	32:bindings.btn1, #clockwise from top left
-	16:bindings.btn2, 
-	8 :bindings.btn3, 
-	4 :bindings.btn4, 
-	2 :bindings.btn5, 
-	1 :bindings.btn6, 
+	128:bindings.btn1, #clockwise from top left
+	64 :bindings.btn2, 
+	32 :bindings.btn3, 
+	16 :bindings.btn4, 
+	8  :bindings.btn5, 
+	4  :bindings.btn6, 
+	2  :bindings.btn7,
+	1  :bindings.btn8,
+ 
 
 	0 :bindings.btn0, #button released
 }
 
-# switch to handle gesture types
-gst_switch = {
-	18:bindings.gst_left, #2 fingers
-	19:bindings.gst_right, 
-	20:bindings.gst_up,
- 	21:bindings.gst_down, 	
-
- 	36:bindings.gst_left3, #3 fingers
-	37:bindings.gst_right3, 
-	34:bindings.gst_up3,
- 	35:bindings.gst_down3, 
-
- 	22:bindings.gst_zoomin, #2 fingers expand
- 	23:bindings.gst_zoomout, #2 fingers pinch
-
- 	1 :gst_tap1, #single finger tap
- 	17:gst_tap2, #2 finger tap
- 	33:gst_tap3, #3 finger tap
- 	0 :bindings.gst_end, #any gesture release
-
-}
-#reverse gesture axes for LH setting
-gst_switch_LH = {
-	19:bindings.gst_left, #2 fingers
-	18:bindings.gst_right, 
-	21:bindings.gst_up,
- 	20:bindings.gst_down, 	
-
- 	37:bindings.gst_left3, #3 fingers
-	36:bindings.gst_right3, 
-	35:bindings.gst_up3,
- 	34:bindings.gst_down3, 
-
- 	22:bindings.gst_zoomin, #2 fingers expand
- 	23:bindings.gst_zoomout, #2 fingers pinch
-
- 	1 :gst_tap1, #single finger tap
- 	17:gst_tap2, #2 finger tap
- 	33:gst_tap3, #3 finger tap
- 	0 :bindings.gst_end, #any gesture release
-
-}
 
 
 
