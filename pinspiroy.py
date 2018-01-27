@@ -142,8 +142,6 @@ def id_pen(data):
 # switch to handle input types
 input_switch = {
 	224:id_btn, #buttonpad 
-	225:id_gst, #trackpad gestures
-	144:id_trk, #trackpad movement
 	129:id_pen, #stylus down
 	128:id_pen, #stylus up
 	130:id_pen, #stylus button 1
