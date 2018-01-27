@@ -34,13 +34,6 @@ cap_pen = {
 	ecodes.EV_MSC: [ecodes.MSC_SCAN], #not sure why, but it appears to be needed
 	}
 
-#trackpad specs
-cap_track = {
-	ecodes.EV_KEY: [ecodes.BTN_LEFT, ecodes.BTN_RIGHT, ecodes.BTN_MIDDLE],
-	ecodes.EV_ABS: [
-		(ecodes.ABS_X, AbsInfo(0,0,PEN_MAX_X,0,0,0)), # same max as pen surface
-		(ecodes.ABS_Y, AbsInfo(0,0,31620,0,0,0)),],
-	}
 
 #buttons must be defined in the same sequential order as in the Linux specs
 #https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h
@@ -53,9 +46,9 @@ cap_btn = {
 					ecodes.BTN_MOUSE, ecodes.BTN_LEFT, ecodes.BTN_RIGHT, ecodes.BTN_MIDDLE]
 	}
 
-# create our 3 virtual devices
-vpen 	= UInput(cap_pen, 	name="pinspiroy-pen", 		version=0x3)
-vbtn	= UInput(cap_btn, 	name="pinspiroy-button", 	version=0x5)
+# create our 2 virtual devices
+vpen = UInput(cap_pen, name="pinspiroy950-pen", version=0x3)
+vbtn = UInput(cap_btn, name="pinspiroy950-button", version=0x5)
 
 time.sleep(0.1) # needed due to some xserver feature 
 
@@ -66,24 +59,7 @@ def id_btn(data):
 	else:
 		btn_switch[data[4]](vbtn)
 	
-def id_gst(data):
-	if data[4] == 24 or data[4] == 25:
-		print('key error: ' + str(data[4]))
-	elif LEFT_HANDED:
-		gst_switch_LH[data[4]](vbtn)
-	else:
-		gst_switch[data[4]](vbtn)
 
-def id_trk(data):
-	if TRACKPAD_ENABLED:
-		x = data[3]*255 + data[2]
-		y = data[5]*255 + data[4]
-		if LEFT_HANDED:	
-			x = PEN_MAX_X-x
-			y = PEN_MAX_Y-y
-		vtrack.write(ecodes.EV_ABS, ecodes.ABS_X, x)
-		vtrack.write(ecodes.EV_ABS, ecodes.ABS_Y, y)
-		vtrack.syn()
 
 def pressure_curve(z):
 	z = z/FULL_PRESSURE
@@ -96,6 +72,8 @@ def pressure_curve(z):
 	elif PRESSURE_CURVE == 'SOFT':
 		z = z*math.sqrt(z)/math.sqrt(PEN_MAX_Z)
 	return math.floor(z)
+global cntr
+cntr = 0
 
 #handler for pen input
 def id_pen(data):
@@ -118,24 +96,32 @@ def id_pen(data):
 
 	if data[1] == 128: # pen registered, but not touching pad
 		vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 0)
-	elif data[1] == 130: # stylus button 1
-		if z>10:
-			vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 1)
-		else:
-			vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 0)
-		vpen.write(ecodes.EV_KEY, ecodes.BTN_STYLUS, 1)
-	elif data[1] == 132: # stylus button 2
-		if z>10:
-			vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 1)
-		else:
-			vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 0)
-		vpen.write(ecodes.EV_KEY, ecodes.BTN_STYLUS2, 1)
+	elif (data[1] == 130 or data[1] == 131) and cntr > 100: # stylus button 
+		bindings.styl1(vbtn)
+		global cntr
+		cntr = 0
+		#if z>10:
+		#	vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 1)
+		#else:
+		#	vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 0)
+		#vpen.write(ecodes.EV_KEY, ecodes.BTN_STYLUS, 1)
+	elif (data[1] == 132 or data[1] == 133) and cntr > 100: # stylus button 2
+		bindings.styl2(vbtn)
+		global cntr
+		cntr = 0
+		#if z>10:
+		#	vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 1)
+		#else:
+		#	vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 0)
+		#vpen.write(ecodes.EV_KEY, ecodes.BTN_STYLUS2, 1)
 	elif data[1] == 129: # == 129; pen touching pad
 		vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 1)
 
 	vpen.write(ecodes.EV_KEY, ecodes.BTN_TOOL_PEN, 1)
 
 	vpen.syn() #sync all inputs together
+
+	bindings.styl0(vbtn)
 
 
 
@@ -145,7 +131,9 @@ input_switch = {
 	129:id_pen, #stylus down
 	128:id_pen, #stylus up
 	130:id_pen, #stylus button 1
-	132:id_pen,	#stylus button 2
+	131:id_pen, #stylus button 1 (while toutching)
+	132:id_pen, #stylus button 2
+	133:id_pen  #stylus button 2 (while touching)
 }
 
 # switch to handle button types
@@ -197,6 +185,7 @@ if dev.is_kernel_driver_active(interface) is True:
 ##msc = 1
 print('pinspiroy driver should be running!')
 while True:
+	cntr +=1
 	try:
 		##msc+=1
 		# data received as array of [0,255] ints
