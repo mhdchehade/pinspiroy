@@ -68,3 +68,15 @@ def btn0(vbtn):
 	vbtn.syn()
 
 
+def styl1(vbtn): #stylus 1 right click
+	vbtn.write(ecodes.EV_KEY, ecodes.BTN_RIGHT, 1)
+	vbtn.syn()
+
+def styl2(vbtn): #stylus 2 middle click
+	vbtn.write(ecodes.EV_KEY, ecodes.BTN_MIDDLE, 1)
+	vbtn.syn()
+
+def styl0(vbtn): 
+	vbtn.write(ecodes.EV_KEY, ecodes.BTN_RIGHT, 0)
+	vbtn.write(ecodes.EV_KEY, ecodes.BTN_MIDDLE, 0)
+	vbtn.syn()
