@@ -1,6 +1,5 @@
 #user tablet settings
 LEFT_HANDED      = False 	#rotate pen and track 180 if true
-TRACKPAD_ENABLED = False #since it's sort of in the way
 
 # playing with these pressure curves types
 PRESSURE_CURVE   = False # LINEAR, SOFT, HARD
