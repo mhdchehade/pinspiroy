@@ -28,8 +28,8 @@ cap_pen = {
 	ecodes.EV_ABS: [
 		(ecodes.ABS_X, AbsInfo(0,0,PEN_MAX_X,0,0,5080)), #value, min, max, fuzz, flat, resolution
 		(ecodes.ABS_Y, AbsInfo(0,0,PEN_MAX_Y,0,0,5080)),
-		(ecodes.ABS_PRESSURE, AbsInfo(0,0,2048,0,0,0)),],
-	ecodes.EV_MSC: [ecodes.MSC_SCAN], #not sure why, but it appears to be needed
+		(ecodes.ABS_PRESSURE, AbsInfo(0,0,2048,0,0,0)),]#,
+	#ecodes.EV_MSC: [ecodes.MSC_SCAN], #not sure why, but it appears to be needed
 	}
 
 
@@ -95,18 +95,18 @@ def id_pen(data):
 	if data[1] == 128: # pen registered, but not touching pad
 		vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 0)
 	if (data[1] == 130 or data[1] == 131): # stylus button 
-		bindings.styl1(vbtn)
+		bindings.styl1(vpen)
 	else:
-		bindings.styl10(vbtn)
+		bindings.styl10(vpen)
 		#if z>10:
 		#	vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 1)
 		#else:
 		#	vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 0)
 		#vpen.write(ecodes.EV_KEY, ecodes.BTN_STYLUS, 1)
 	if (data[1] == 132 or data[1] == 133): # stylus button 2
-		bindings.styl2(vbtn)
+		bindings.styl2(vpen)
 	else:
-		bindings.styl20(vbtn)
+		bindings.styl20(vpen)
 		#if z>10:
 		#	vpen.write(ecodes.EV_KEY, ecodes.BTN_TOUCH, 1)
 		#else:
