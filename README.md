@@ -4,7 +4,7 @@
 
 pinspiroy 950 is a linux driver workaround for the [HUION H950P (8192)](https://www.huiontablet.com/all-products/graphic-tablets/huion-h950p.html) forked from [pinspiroy](https://github.com/dannytaylor/pinspiroy). Note that this is not kernel-level driver, it is a user land implementation that creates virtual devices with uinput to mimic the tablet functionality.
 
-All features of the tablet (except stylus side buttons) are working with this, but it isn't an ideal fix. Also I'm not too familiar with python so this might be implemented poorly. Hopefully this could be helpful for someone smarter than me to make a proper driver.
+All features of the tablet are working with this, but it isn't an ideal fix. Also I'm not too familiar with python so this might be implemented poorly. Hopefully this could be helpful for someone smarter than me to make a proper driver.
 
 ## Requirements
 - [pyusb](https://walac.github.io/pyusb/) (pip install pyusb)
@@ -13,8 +13,6 @@ All features of the tablet (except stylus side buttons) are working with this, b
 
 ## Usage
 _$ sudo python pinspiroy.py_
-
-You may need to first connect the device to a Windows VM to flip the tablet into full-functioning mode. This mode should persist on reboot and without the VM, but will not persist on reconnecting the USB dongle.
 
 Configuration values are found in config.py. Currently it's just bools for rotating axes for left-handed. The pad buttons are setup to change positions when rotated also.
 Added options for simple pressure curves and pressure needed for a full stroke. Defaults are linear pressure and 100% force for full pressure. I'd recommend using your art programs pressure adjustments instead of these options if you can.
@@ -34,8 +32,8 @@ button2: E			# eraser tool
 button3: spacebar (hold)	# pan tool
 button4: shift (hold)		# brush resizer
 button5: ctrl + shift + z	# redo
-button6: ctrl + z		# undo
-button7: ctrl + shift + z	# redo
+button6: wheel forward		# zoom in
+button7: wheel backward		# zoom out
 button8: ctrl + z		# undo
 ``
 
@@ -53,10 +51,5 @@ or automatically on boot; [see the Arch wiki](https://wiki.archlinux.org/index.p
 Still working out some of the problems, but feel free to tweet @ me or open an issue.
 
 ## TODO:
-- Figure out USB data to send to the tablet to flip it to full functioning mode so Windows VM not needed
-- Add support for tablet in impaired mode
-- Get stylus buttons working
 - load config by argument for program specific bindings
 - add configuration for multiple monitors and irregular resolutions
-
-![](https://github.com/dannytaylor/pinspiroy/blob/master/docs/spin2.gif)
