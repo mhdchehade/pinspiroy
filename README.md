@@ -1,3 +1,5 @@
+### DEVELOPMENT IS STOPPED, NOW USING DIGIMEND DRIVERS
+
 ### Pen tablet functionality seems to be broken after a system update on Archlinux. Driver still works on Ubuntu 16.04. Seems to be an issue with the newer Linux kernel and how uinput interprets BTN\_TOOL\_PEN. Downgrading the kernel doesn't seem to fix the issue, may have to recompile the uinput module from an older kernel (<4.11) manually.
 
 # pinspiroy 950
